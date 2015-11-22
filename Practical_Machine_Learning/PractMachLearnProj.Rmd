@@ -59,7 +59,7 @@ cname <- cname[-(1:6)]
 
 ###  Machine-Learning Model
 
-####  The machine-learning algorithm that was utilized for this modeling project is Quadratic Discriminant Analysis (QDA)- realizing that more than one method would probably suffice for this dataset. QDA is the generalized form of linear discriminant analysis that extends the learning of linear boundaries to non-linear ones. The computation is relative easy and fast (a closed-form solution is generated for each classifier), which is particularly useful for a dataset of this size. Most importantly, it does not require any tuning with hyperparameters (such as PCA components), so that re-sampling approaches like cross-validation and bootstrap do not add value to the modeling step in terms of improving classification accuracy.
+####  The machine-learning algorithm that was utilized for this modeling project is Quadratic Discriminant Analysis (QDA)- realizing that more than one method would probably suffice for this dataset. QDA is the generalized form of linear discriminant analysis that extends the learning of linear boundaries to non-linear ones. The computation is relative easy and fast (a closed-form solution is generated for each classifier), which is particularly useful for a dataset of this size. Most importantly, it does not require any tuning with hyperparameters (such as PCA components), so that re-sampling approaches like cross-validation and bootstrap only add value by verifying the robustness of the model using with the selected predictors.
 
 ####  Because of the difference in the magnitude of the various predictors, the only preprocessing applied to the data was scaling and centering. It should however be pointed out that there is significant correlation between variables that are tied to each excerise type (arm, forearm, belt or dumbbell). Further feature set reduction with PCA was however found not the improve the results - again perhaps due to the well-documented flexibility of quadratic discriminant classifiers.
 
@@ -74,7 +74,7 @@ modelfit <- train(ytrain[ix] ~.,method="qda",
                   data=trainingH[ix,])
 ```
 
-####  The model perfomance metrics (confustion matrix and associated statistics) was evaluated by applying the model generated from half of the training set, to the other half of the training data.
+####  The model perfomance metrics (confusion matrix and associated statistics) was evaluated by applying the model generated from half of the training set, to the other half of the training data.
 
 ```{r, echo=TRUE,message=FALSE}
 confusionMatrix(ytrain[-ix],predict(modelfit,trainingH[-ix,]))
