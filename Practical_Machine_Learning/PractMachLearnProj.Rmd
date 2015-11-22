@@ -1,7 +1,9 @@
-Analysis Excercise Monitoring Data
-===========================================================================
-By Olusola Soyemi
-===========================================================================
+---
+title: "Analysis Excercise Monitoring Data"
+author: "O Soyemi"
+output: html_document
+self-contained: no
+---
 ### Executive Summary:
 #### A machine learning model to predict the excercise qualtity using accelerometer measurements from 6 volunteer subjects during controlled excersises. A quadratic discriminant model was developed to predict 5 possible levels of exercise quality (1 good, 4 bad) with about 90% clasification accuracy. The model was applied to data acquired from 20 test cases and 100% of all the test cases were correctly classified by exercise quality.
 
@@ -13,7 +15,7 @@ testing <- read.csv('test.csv')
 ```
 ### Feature Selection
 
-#### The training set data consists of 19622 measurements acquired across 160 variables on 6 male subjects from 20-28 years old. The variable include the dependent variable ("classe") describing exercise quality (A-E). The remaining 159 variables contain variants of accelerometer measurements from the arm, forearm, dumbbell and exercise belt; as well as time. The following steps were taken in selecting the best combination of predictors for modeling  "classe"
+#### The training set data consists of 19622 measurements acquired across 160 variables on 6 male subjects from 20-28 years old (1). The variables include the dependent variable ("classe") describing exercise quality (A-E). The remaining 159 variables contain variants of accelerometer measurements from the arm, forearm, dumbbell and exercise belt; as well as time. The following steps were taken in selecting the best combination of predictors for modeling  "classe"
 
 #### First all the variables containing incomplete data were removed
 
@@ -55,11 +57,19 @@ testing <- testing[,-(1:6)]
 cname <- cname[-(1:6)]
 ```
 
-####  The feature-set selection process resulted in the downsampling of the predictor set from 160 to 52 variables (13 each from the belt, forearm, arm and dumbbell exercises).
+####  The feature-set selection process resulted in the downsampling of the predictor set from 160 to 52 predictors (13 each from the belt, forearm, arm and dumbbell exercises). The selected predictors are:
 
+``` {r, echo=TRUE}
+g <- data.frame(cbind(cname[grepl('_belt',cname)],
+cname[grepl('_dumbbell',cname)],
+cname[grepl('_forearm',cname)],
+cname[grepl('_arm',cname)]))
+colnames(g) <- c("Belt","Dumbbell","Forearm","Arm")
+g
+```
 ###  Machine-Learning Model
 
-####  The machine-learning algorithm that was utilized for this modeling project is Quadratic Discriminant Analysis (QDA)- realizing that more than one method would probably suffice for this dataset. QDA is the generalized form of linear discriminant analysis that extends the learning of linear boundaries to non-linear ones. The computation is relative easy and fast (a closed-form solution is generated for each classifier), which is particularly useful for a dataset of this size. Most importantly, it does not require any tuning with hyperparameters (such as PCA components), so that re-sampling approaches like cross-validation and bootstrap only add value by verifying the robustness of the model using with the selected predictors.
+####  The machine-learning algorithm that was utilized for this modeling project is Quadratic Discriminant Analysis (QDA)- realizing that more than one method would probably suffice for this dataset. QDA is the generalized form of linear discriminant analysis that extends the learning of linear boundaries to non-linear ones. The computation is relative easy and fast (a closed-form solution is generated for each classifier), which is particularly useful for a dataset of this size. More importantly, it does not require any tuning with hyperparameters (such as PCA components), so that re-sampling approaches like cross-validation and bootstrap only add value by verifying the robustness of the model using with the selected predictors.
 
 ####  Because of the difference in the magnitude of the various predictors, the only preprocessing applied to the data was scaling and centering. It should however be pointed out that there is significant correlation between variables that are tied to each excerise type (arm, forearm, belt or dumbbell). Further feature set reduction with PCA was however found not the improve the results - again perhaps due to the well-documented flexibility of quadratic discriminant classifiers.
 
@@ -88,3 +98,7 @@ testingH <- predict(preObj,testing) # apply test samples to model
 results <- predict(modelfit,testingH) # results
 ```
 #### The independent model test yielded results in which the exercise qualilty for each of the 20 test subjects was correctly identified i.e. 100% test accuracy.
+
+### REFERENCES
+#### (1) Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. Qualitative Activity Recognition of Weight Lifting Exercises. Proceedings of 4th International Conference in Cooperation with SIGCHI (Augmented Human '13) . Stuttgart, Germany: ACM SIGCHI, 2013.
+
