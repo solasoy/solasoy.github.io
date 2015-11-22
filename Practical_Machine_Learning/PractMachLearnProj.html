@@ -79,8 +79,8 @@ testing &lt;- read.csv('test.csv')</code></pre>
 </div>
 <div id="feature-selection" class="section level3">
 <h3>Feature Selection</h3>
-<div id="the-training-set-data-consists-of-19622-measurements-acquired-across-160-variables-on-6-male-subjects-from-20-28-years-old.-the-variable-include-the-dependent-variable-classe-describing-exercise-quality-a-e.-the-remaining-159-variables-contain-variants-of-accelerometer-measurements-from-the-arm-forearm-dumbbell-and-exercise-belt-as-well-as-time.-the-following-steps-were-taken-in-selecting-the-best-combination-of-predictors-for-modeling-classe" class="section level4">
-<h4>The training set data consists of 19622 measurements acquired across 160 variables on 6 male subjects from 20-28 years old. The variable include the dependent variable (“classe”) describing exercise quality (A-E). The remaining 159 variables contain variants of accelerometer measurements from the arm, forearm, dumbbell and exercise belt; as well as time. The following steps were taken in selecting the best combination of predictors for modeling “classe”</h4>
+<div id="the-training-set-data-consists-of-19622-measurements-acquired-across-160-variables-on-6-male-subjects-from-20-28-years-old-1.-the-variables-include-the-dependent-variable-classe-describing-exercise-quality-a-e.-the-remaining-159-variables-contain-variants-of-accelerometer-measurements-from-the-arm-forearm-dumbbell-and-exercise-belt-as-well-as-time.-the-following-steps-were-taken-in-selecting-the-best-combination-of-predictors-for-modeling-classe" class="section level4">
+<h4>The training set data consists of 19622 measurements acquired across 160 variables on 6 male subjects from 20-28 years old (1). The variables include the dependent variable (“classe”) describing exercise quality (A-E). The remaining 159 variables contain variants of accelerometer measurements from the arm, forearm, dumbbell and exercise belt; as well as time. The following steps were taken in selecting the best combination of predictors for modeling “classe”</h4>
 </div>
 <div id="first-all-the-variables-containing-incomplete-data-were-removed" class="section level4">
 <h4>First all the variables containing incomplete data were removed</h4>
@@ -119,14 +119,48 @@ cname &lt;- cname[nz$nzv==FALSE]</code></pre>
 testing &lt;- testing[,-(1:6)]
 cname &lt;- cname[-(1:6)]</code></pre>
 </div>
-<div id="the-feature-set-selection-process-resulted-in-the-downsampling-of-the-predictor-set-from-160-to-52-variables-13-each-from-the-belt-forearm-arm-and-dumbbell-exercises." class="section level4">
-<h4>The feature-set selection process resulted in the downsampling of the predictor set from 160 to 52 variables (13 each from the belt, forearm, arm and dumbbell exercises).</h4>
+<div id="the-feature-set-selection-process-resulted-in-the-downsampling-of-the-predictor-set-from-160-to-52-variables-13-each-from-the-belt-forearm-arm-and-dumbbell-exercises.-the-selected-predictors-are" class="section level4">
+<h4>The feature-set selection process resulted in the downsampling of the predictor set from 160 to 52 variables (13 each from the belt, forearm, arm and dumbbell exercises). The selected predictors are:</h4>
+<pre class="r"><code>g &lt;- data.frame(cbind(cname[grepl('_belt',cname)],
+cname[grepl('_dumbbell',cname)],
+cname[grepl('_forearm',cname)],
+cname[grepl('_arm',cname)]))
+colnames(g) &lt;- c(&quot;Belt&quot;,&quot;Dumbbell&quot;,&quot;Forearm&quot;,&quot;Arm&quot;)
+g</code></pre>
+<pre><code>##                Belt             Dumbbell             Forearm
+## 1         roll_belt        roll_dumbbell        roll_forearm
+## 2        pitch_belt       pitch_dumbbell       pitch_forearm
+## 3          yaw_belt         yaw_dumbbell         yaw_forearm
+## 4  total_accel_belt total_accel_dumbbell total_accel_forearm
+## 5      gyros_belt_x     gyros_dumbbell_x     gyros_forearm_x
+## 6      gyros_belt_y     gyros_dumbbell_y     gyros_forearm_y
+## 7      gyros_belt_z     gyros_dumbbell_z     gyros_forearm_z
+## 8      accel_belt_x     accel_dumbbell_x     accel_forearm_x
+## 9      accel_belt_y     accel_dumbbell_y     accel_forearm_y
+## 10     accel_belt_z     accel_dumbbell_z     accel_forearm_z
+## 11    magnet_belt_x    magnet_dumbbell_x    magnet_forearm_x
+## 12    magnet_belt_y    magnet_dumbbell_y    magnet_forearm_y
+## 13    magnet_belt_z    magnet_dumbbell_z    magnet_forearm_z
+##                Arm
+## 1         roll_arm
+## 2        pitch_arm
+## 3          yaw_arm
+## 4  total_accel_arm
+## 5      gyros_arm_x
+## 6      gyros_arm_y
+## 7      gyros_arm_z
+## 8      accel_arm_x
+## 9      accel_arm_y
+## 10     accel_arm_z
+## 11    magnet_arm_x
+## 12    magnet_arm_y
+## 13    magnet_arm_z</code></pre>
 </div>
 </div>
 <div id="machine-learning-model" class="section level3">
 <h3>Machine-Learning Model</h3>
-<div id="the-machine-learning-algorithm-that-was-utilized-for-this-modeling-project-is-quadratic-discriminant-analysis-qda--realizing-that-more-than-one-method-would-probably-suffice-for-this-dataset.-qda-is-the-generalized-form-of-linear-discriminant-analysis-that-extends-the-learning-of-linear-boundaries-to-non-linear-ones.-the-computation-is-relative-easy-and-fast-a-closed-form-solution-is-generated-for-each-classifier-which-is-particularly-useful-for-a-dataset-of-this-size.-most-importantly-it-does-not-require-any-tuning-with-hyperparameters-such-as-pca-components-so-that-re-sampling-approaches-like-cross-validation-and-bootstrap-only-add-value-by-verifying-the-robustness-of-the-model-using-with-the-selected-predictors." class="section level4">
-<h4>The machine-learning algorithm that was utilized for this modeling project is Quadratic Discriminant Analysis (QDA)- realizing that more than one method would probably suffice for this dataset. QDA is the generalized form of linear discriminant analysis that extends the learning of linear boundaries to non-linear ones. The computation is relative easy and fast (a closed-form solution is generated for each classifier), which is particularly useful for a dataset of this size. Most importantly, it does not require any tuning with hyperparameters (such as PCA components), so that re-sampling approaches like cross-validation and bootstrap only add value by verifying the robustness of the model using with the selected predictors.</h4>
+<div id="the-machine-learning-algorithm-that-was-utilized-for-this-modeling-project-is-quadratic-discriminant-analysis-qda--realizing-that-more-than-one-method-would-probably-suffice-for-this-dataset.-qda-is-the-generalized-form-of-linear-discriminant-analysis-that-extends-the-learning-of-linear-boundaries-to-non-linear-ones.-the-computation-is-relative-easy-and-fast-a-closed-form-solution-is-generated-for-each-classifier-which-is-particularly-useful-for-a-dataset-of-this-size.-more-importantly-it-does-not-require-any-tuning-with-hyperparameters-such-as-pca-components-so-that-re-sampling-approaches-like-cross-validation-and-bootstrap-only-add-value-by-verifying-the-robustness-of-the-model-using-with-the-selected-predictors." class="section level4">
+<h4>The machine-learning algorithm that was utilized for this modeling project is Quadratic Discriminant Analysis (QDA)- realizing that more than one method would probably suffice for this dataset. QDA is the generalized form of linear discriminant analysis that extends the learning of linear boundaries to non-linear ones. The computation is relative easy and fast (a closed-form solution is generated for each classifier), which is particularly useful for a dataset of this size. More importantly, it does not require any tuning with hyperparameters (such as PCA components), so that re-sampling approaches like cross-validation and bootstrap only add value by verifying the robustness of the model using with the selected predictors.</h4>
 </div>
 <div id="because-of-the-difference-in-the-magnitude-of-the-various-predictors-the-only-preprocessing-applied-to-the-data-was-scaling-and-centering.-it-should-however-be-pointed-out-that-there-is-significant-correlation-between-variables-that-are-tied-to-each-excerise-type-arm-forearm-belt-or-dumbbell.-further-feature-set-reduction-with-pca-was-however-found-not-the-improve-the-results---again-perhaps-due-to-the-well-documented-flexibility-of-quadratic-discriminant-classifiers." class="section level4">
 <h4>Because of the difference in the magnitude of the various predictors, the only preprocessing applied to the data was scaling and centering. It should however be pointed out that there is significant correlation between variables that are tied to each excerise type (arm, forearm, belt or dumbbell). Further feature set reduction with PCA was however found not the improve the results - again perhaps due to the well-documented flexibility of quadratic discriminant classifiers.</h4>
@@ -182,6 +216,12 @@ results &lt;- predict(modelfit,testingH) # results</code></pre>
 </div>
 <div id="the-independent-model-test-yielded-results-in-which-the-exercise-qualilty-for-each-of-the-20-test-subjects-was-correctly-identified-i.e.100-test-accuracy." class="section level4">
 <h4>The independent model test yielded results in which the exercise qualilty for each of the 20 test subjects was correctly identified i.e. 100% test accuracy.</h4>
+</div>
+</div>
+<div id="references" class="section level3">
+<h3>REFERENCES</h3>
+<div id="velloso-e.-bulling-a.-gellersen-h.-ugulino-w.-fuks-h.-qualitative-activity-recognition-of-weight-lifting-exercises.-proceedings-of-4th-international-conference-in-cooperation-with-sigchi-augmented-human-13-.-stuttgart-germany-acm-sigchi-2013." class="section level4">
+<h4>(1) Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. Qualitative Activity Recognition of Weight Lifting Exercises. Proceedings of 4th International Conference in Cooperation with SIGCHI (Augmented Human ’13) . Stuttgart, Germany: ACM SIGCHI, 2013.</h4>
 </div>
 </div>
 </div>
